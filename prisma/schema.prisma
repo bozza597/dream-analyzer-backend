@@ -13,6 +13,12 @@ enum Platform {
   WEB
 }
 
+enum DreamType {
+  DREAM
+  NIGHTMARE
+  LUCID
+}
+
 model User {
   id                 String    @id
   email              String?   @unique
@@ -23,10 +29,67 @@ model User {
   lastAppVersionUsed String?
   lastAccess         DateTime?
   createdAt          DateTime  @default(now())
-  updatedAt          DateTime  @updatedAt
+  updatedAt          DateTime  @updatedAt 
   deletedAt          DateTime?
-  
+
   fcmTokens FCMToken[]
+  dreams    Dream[]
+}
+
+model Dream {
+  id          String    @id @default(cuid())
+  userId      String
+  type        DreamType @default(DREAM)
+  title       String?
+  content     String
+  emotions    String[]  @default([])
+  vividness   Int?
+  // The night the dream occurred (local date of the user), used by the calendar.
+  occurredAt  DateTime  @default(now())
+
+  // Filled in once the AI analysis has run.
+  summary           String?
+  interpretation    String?
+  analyzedAt        DateTime?
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+
+  user      User           @relation(fields: [userId], references: [id])
+  entities  DreamEntity[]
+  questions DreamQuestion[]
+
+  @@index([userId, occurredAt])
+}
+
+// A symbol / entity extracted from a dream (e.g. "Acqua", "Volo").
+model DreamEntity {
+  id        String   @id @default(cuid())
+  dreamId   String
+  // Normalised lowercase key used to count recurrences across a user's dreams.
+  key       String
+  name      String
+  meaning   String
+  createdAt DateTime @default(now())
+
+  dream Dream @relation(fields: [dreamId], references: [id], onDelete: Cascade)
+
+  @@index([dreamId])
+}
+
+// A follow-up question the analyzer asks to deepen the interpretation.
+model DreamQuestion {
+  id        String   @id @default(cuid())
+  dreamId   String
+  question  String
+  answer    String?
+  position  Int      @default(0)
+  createdAt DateTime @default(now())
+
+  dream Dream @relation(fields: [dreamId], references: [id], onDelete: Cascade)
+
+  @@index([dreamId])
 }
 
 model FCMToken {

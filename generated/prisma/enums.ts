@@ -16,3 +16,12 @@ export const Platform = {
 } as const
 
 export type Platform = (typeof Platform)[keyof typeof Platform]
+
+
+export const DreamType = {
+  DREAM: 'DREAM',
+  NIGHTMARE: 'NIGHTMARE',
+  LUCID: 'LUCID'
+} as const
+
+export type DreamType = (typeof DreamType)[keyof typeof DreamType]

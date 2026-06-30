@@ -231,6 +231,7 @@ export type UserWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   deletedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   fcmTokens?: Prisma.FCMTokenListRelationFilter
+  dreams?: Prisma.DreamListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -246,6 +247,7 @@ export type UserOrderByWithRelationInput = {
   updatedAt?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   fcmTokens?: Prisma.FCMTokenOrderByRelationAggregateInput
+  dreams?: Prisma.DreamOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -264,6 +266,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   deletedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   fcmTokens?: Prisma.FCMTokenListRelationFilter
+  dreams?: Prisma.DreamListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -313,6 +316,7 @@ export type UserCreateInput = {
   updatedAt?: Date | string
   deletedAt?: Date | string | null
   fcmTokens?: Prisma.FCMTokenCreateNestedManyWithoutUserInput
+  dreams?: Prisma.DreamCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -328,6 +332,7 @@ export type UserUncheckedCreateInput = {
   updatedAt?: Date | string
   deletedAt?: Date | string | null
   fcmTokens?: Prisma.FCMTokenUncheckedCreateNestedManyWithoutUserInput
+  dreams?: Prisma.DreamUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -343,6 +348,7 @@ export type UserUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   fcmTokens?: Prisma.FCMTokenUpdateManyWithoutUserNestedInput
+  dreams?: Prisma.DreamUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -358,6 +364,7 @@ export type UserUncheckedUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   fcmTokens?: Prisma.FCMTokenUncheckedUpdateManyWithoutUserNestedInput
+  dreams?: Prisma.DreamUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -469,6 +476,20 @@ export type DateTimeFieldUpdateOperationsInput = {
   set?: Date | string
 }
 
+export type UserCreateNestedOneWithoutDreamsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutDreamsInput, Prisma.UserUncheckedCreateWithoutDreamsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutDreamsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutDreamsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutDreamsInput, Prisma.UserUncheckedCreateWithoutDreamsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutDreamsInput
+  upsert?: Prisma.UserUpsertWithoutDreamsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutDreamsInput, Prisma.UserUpdateWithoutDreamsInput>, Prisma.UserUncheckedUpdateWithoutDreamsInput>
+}
+
 export type UserCreateNestedOneWithoutFcmTokensInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutFcmTokensInput, Prisma.UserUncheckedCreateWithoutFcmTokensInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutFcmTokensInput
@@ -483,6 +504,82 @@ export type UserUpdateOneRequiredWithoutFcmTokensNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutFcmTokensInput, Prisma.UserUpdateWithoutFcmTokensInput>, Prisma.UserUncheckedUpdateWithoutFcmTokensInput>
 }
 
+export type UserCreateWithoutDreamsInput = {
+  id: string
+  email?: string | null
+  name?: string | null
+  isAnonymous?: boolean
+  country?: string | null
+  timezone?: string | null
+  lastAppVersionUsed?: string | null
+  lastAccess?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  fcmTokens?: Prisma.FCMTokenCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutDreamsInput = {
+  id: string
+  email?: string | null
+  name?: string | null
+  isAnonymous?: boolean
+  country?: string | null
+  timezone?: string | null
+  lastAppVersionUsed?: string | null
+  lastAccess?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  fcmTokens?: Prisma.FCMTokenUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutDreamsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutDreamsInput, Prisma.UserUncheckedCreateWithoutDreamsInput>
+}
+
+export type UserUpsertWithoutDreamsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutDreamsInput, Prisma.UserUncheckedUpdateWithoutDreamsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutDreamsInput, Prisma.UserUncheckedCreateWithoutDreamsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutDreamsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutDreamsInput, Prisma.UserUncheckedUpdateWithoutDreamsInput>
+}
+
+export type UserUpdateWithoutDreamsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isAnonymous?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastAppVersionUsed?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastAccess?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  fcmTokens?: Prisma.FCMTokenUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutDreamsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isAnonymous?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastAppVersionUsed?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastAccess?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  fcmTokens?: Prisma.FCMTokenUncheckedUpdateManyWithoutUserNestedInput
+}
+
 export type UserCreateWithoutFcmTokensInput = {
   id: string
   email?: string | null
@@ -495,6 +592,7 @@ export type UserCreateWithoutFcmTokensInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
+  dreams?: Prisma.DreamCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutFcmTokensInput = {
@@ -509,6 +607,7 @@ export type UserUncheckedCreateWithoutFcmTokensInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
+  dreams?: Prisma.DreamUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutFcmTokensInput = {
@@ -539,6 +638,7 @@ export type UserUpdateWithoutFcmTokensInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dreams?: Prisma.DreamUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutFcmTokensInput = {
@@ -553,6 +653,7 @@ export type UserUncheckedUpdateWithoutFcmTokensInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dreams?: Prisma.DreamUncheckedUpdateManyWithoutUserNestedInput
 }
 
 
@@ -562,10 +663,12 @@ export type UserUncheckedUpdateWithoutFcmTokensInput = {
 
 export type UserCountOutputType = {
   fcmTokens: number
+  dreams: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   fcmTokens?: boolean | UserCountOutputTypeCountFcmTokensArgs
+  dreams?: boolean | UserCountOutputTypeCountDreamsArgs
 }
 
 /**
@@ -585,6 +688,13 @@ export type UserCountOutputTypeCountFcmTokensArgs<ExtArgs extends runtime.Types.
   where?: Prisma.FCMTokenWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountDreamsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.DreamWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -599,6 +709,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   updatedAt?: boolean
   deletedAt?: boolean
   fcmTokens?: boolean | Prisma.User$fcmTokensArgs<ExtArgs>
+  dreams?: boolean | Prisma.User$dreamsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -647,6 +758,7 @@ export type UserSelectScalar = {
 export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "name" | "isAnonymous" | "country" | "timezone" | "lastAppVersionUsed" | "lastAccess" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   fcmTokens?: boolean | Prisma.User$fcmTokensArgs<ExtArgs>
+  dreams?: boolean | Prisma.User$dreamsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -656,6 +768,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   name: "User"
   objects: {
     fcmTokens: Prisma.$FCMTokenPayload<ExtArgs>[]
+    dreams: Prisma.$DreamPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1064,6 +1177,7 @@ readonly fields: UserFieldRefs;
 export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   fcmTokens<T extends Prisma.User$fcmTokensArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$fcmTokensArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FCMTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  dreams<T extends Prisma.User$dreamsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$dreamsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DreamPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1518,6 +1632,30 @@ export type User$fcmTokensArgs<ExtArgs extends runtime.Types.Extensions.Internal
   take?: number
   skip?: number
   distinct?: Prisma.FCMTokenScalarFieldEnum | Prisma.FCMTokenScalarFieldEnum[]
+}
+
+/**
+ * User.dreams
+ */
+export type User$dreamsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Dream
+   */
+  select?: Prisma.DreamSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Dream
+   */
+  omit?: Prisma.DreamOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DreamInclude<ExtArgs> | null
+  where?: Prisma.DreamWhereInput
+  orderBy?: Prisma.DreamOrderByWithRelationInput | Prisma.DreamOrderByWithRelationInput[]
+  cursor?: Prisma.DreamWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.DreamScalarFieldEnum | Prisma.DreamScalarFieldEnum[]
 }
 
 /**

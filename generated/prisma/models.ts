@@ -9,5 +9,8 @@
  * 🟢 You can import this file directly.
  */
 export type * from './models/User'
+export type * from './models/Dream'
+export type * from './models/DreamEntity'
+export type * from './models/DreamQuestion'
 export type * from './models/FCMToken'
 export type * from './commonInputTypes'

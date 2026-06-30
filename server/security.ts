@@ -6,9 +6,12 @@ import { getApps, initializeApp } from "firebase-admin/app";
 import ApplicationError, { ErrorCode } from "./types/ApplicationError"
 import { NextRequest, NextResponse } from "next/server"
 import { UsersAdapter } from "./adapters/db/users.adapter";
+import { DreamsAdapter } from "./adapters/db/dreams.adapter";
 import { UserModel } from "./models/User";
 import { FileAdapter } from "./adapters/file.adapter";
 import { UsersService } from "./services/users.service";
+import { DreamsService } from "./services/dreams.service";
+import { AnalysisService } from "./services/analysis.service";
 import { db, DBClient } from "./db";
 
 if (!getApps().length) {
@@ -26,10 +29,12 @@ if (!getApps().length) {
 
 const initAdapters = async (db: DBClient): Promise<Adapters> => {
   const usersAdapter = new UsersAdapter(db)
+  const dreamsAdapter = new DreamsAdapter(db)
 
   return {
     db: {
       users: usersAdapter,
+      dreams: dreamsAdapter,
     },
     file: new FileAdapter(),
   }
@@ -38,6 +43,8 @@ const initAdapters = async (db: DBClient): Promise<Adapters> => {
 const buildContext = async (req: NextRequest): Promise<AppContext> => {
   const adapters = await initAdapters(db)
   const usersService = new UsersService(adapters.db.users)
+  const analysisService = new AnalysisService()
+  const dreamsService = new DreamsService(adapters.db.dreams, analysisService)
 
   const authorization = req.headers.get("Authorization")
   const token = authorization?.replace("Bearer ", "")
@@ -66,6 +73,7 @@ const buildContext = async (req: NextRequest): Promise<AppContext> => {
     adapters,
     services: {
       users: usersService,
+      dreams: dreamsService,
     }
   }
 }

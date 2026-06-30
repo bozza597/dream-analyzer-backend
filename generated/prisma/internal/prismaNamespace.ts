@@ -385,6 +385,9 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 
 export const ModelName = {
   User: 'User',
+  Dream: 'Dream',
+  DreamEntity: 'DreamEntity',
+  DreamQuestion: 'DreamQuestion',
   FCMToken: 'FCMToken'
 } as const
 
@@ -401,7 +404,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "fCMToken"
+    modelProps: "user" | "dream" | "dreamEntity" | "dreamQuestion" | "fCMToken"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -476,6 +479,228 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.UserCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.UserCountAggregateOutputType> | number
+        }
+      }
+    }
+    Dream: {
+      payload: Prisma.$DreamPayload<ExtArgs>
+      fields: Prisma.DreamFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.DreamFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DreamPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.DreamFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DreamPayload>
+        }
+        findFirst: {
+          args: Prisma.DreamFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DreamPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.DreamFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DreamPayload>
+        }
+        findMany: {
+          args: Prisma.DreamFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DreamPayload>[]
+        }
+        create: {
+          args: Prisma.DreamCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DreamPayload>
+        }
+        createMany: {
+          args: Prisma.DreamCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.DreamCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DreamPayload>[]
+        }
+        delete: {
+          args: Prisma.DreamDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DreamPayload>
+        }
+        update: {
+          args: Prisma.DreamUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DreamPayload>
+        }
+        deleteMany: {
+          args: Prisma.DreamDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.DreamUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.DreamUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DreamPayload>[]
+        }
+        upsert: {
+          args: Prisma.DreamUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DreamPayload>
+        }
+        aggregate: {
+          args: Prisma.DreamAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateDream>
+        }
+        groupBy: {
+          args: Prisma.DreamGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DreamGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.DreamCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DreamCountAggregateOutputType> | number
+        }
+      }
+    }
+    DreamEntity: {
+      payload: Prisma.$DreamEntityPayload<ExtArgs>
+      fields: Prisma.DreamEntityFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.DreamEntityFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DreamEntityPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.DreamEntityFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DreamEntityPayload>
+        }
+        findFirst: {
+          args: Prisma.DreamEntityFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DreamEntityPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.DreamEntityFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DreamEntityPayload>
+        }
+        findMany: {
+          args: Prisma.DreamEntityFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DreamEntityPayload>[]
+        }
+        create: {
+          args: Prisma.DreamEntityCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DreamEntityPayload>
+        }
+        createMany: {
+          args: Prisma.DreamEntityCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.DreamEntityCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DreamEntityPayload>[]
+        }
+        delete: {
+          args: Prisma.DreamEntityDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DreamEntityPayload>
+        }
+        update: {
+          args: Prisma.DreamEntityUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DreamEntityPayload>
+        }
+        deleteMany: {
+          args: Prisma.DreamEntityDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.DreamEntityUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.DreamEntityUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DreamEntityPayload>[]
+        }
+        upsert: {
+          args: Prisma.DreamEntityUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DreamEntityPayload>
+        }
+        aggregate: {
+          args: Prisma.DreamEntityAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateDreamEntity>
+        }
+        groupBy: {
+          args: Prisma.DreamEntityGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DreamEntityGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.DreamEntityCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DreamEntityCountAggregateOutputType> | number
+        }
+      }
+    }
+    DreamQuestion: {
+      payload: Prisma.$DreamQuestionPayload<ExtArgs>
+      fields: Prisma.DreamQuestionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.DreamQuestionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DreamQuestionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.DreamQuestionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DreamQuestionPayload>
+        }
+        findFirst: {
+          args: Prisma.DreamQuestionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DreamQuestionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.DreamQuestionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DreamQuestionPayload>
+        }
+        findMany: {
+          args: Prisma.DreamQuestionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DreamQuestionPayload>[]
+        }
+        create: {
+          args: Prisma.DreamQuestionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DreamQuestionPayload>
+        }
+        createMany: {
+          args: Prisma.DreamQuestionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.DreamQuestionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DreamQuestionPayload>[]
+        }
+        delete: {
+          args: Prisma.DreamQuestionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DreamQuestionPayload>
+        }
+        update: {
+          args: Prisma.DreamQuestionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DreamQuestionPayload>
+        }
+        deleteMany: {
+          args: Prisma.DreamQuestionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.DreamQuestionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.DreamQuestionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DreamQuestionPayload>[]
+        }
+        upsert: {
+          args: Prisma.DreamQuestionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DreamQuestionPayload>
+        }
+        aggregate: {
+          args: Prisma.DreamQuestionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateDreamQuestion>
+        }
+        groupBy: {
+          args: Prisma.DreamQuestionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DreamQuestionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.DreamQuestionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DreamQuestionCountAggregateOutputType> | number
         }
       }
     }
@@ -609,6 +834,50 @@ export const UserScalarFieldEnum = {
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
 
 
+export const DreamScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  type: 'type',
+  title: 'title',
+  content: 'content',
+  emotions: 'emotions',
+  vividness: 'vividness',
+  occurredAt: 'occurredAt',
+  summary: 'summary',
+  interpretation: 'interpretation',
+  analyzedAt: 'analyzedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type DreamScalarFieldEnum = (typeof DreamScalarFieldEnum)[keyof typeof DreamScalarFieldEnum]
+
+
+export const DreamEntityScalarFieldEnum = {
+  id: 'id',
+  dreamId: 'dreamId',
+  key: 'key',
+  name: 'name',
+  meaning: 'meaning',
+  createdAt: 'createdAt'
+} as const
+
+export type DreamEntityScalarFieldEnum = (typeof DreamEntityScalarFieldEnum)[keyof typeof DreamEntityScalarFieldEnum]
+
+
+export const DreamQuestionScalarFieldEnum = {
+  id: 'id',
+  dreamId: 'dreamId',
+  question: 'question',
+  answer: 'answer',
+  position: 'position',
+  createdAt: 'createdAt'
+} as const
+
+export type DreamQuestionScalarFieldEnum = (typeof DreamQuestionScalarFieldEnum)[keyof typeof DreamQuestionScalarFieldEnum]
+
+
 export const FCMTokenScalarFieldEnum = {
   token: 'token',
   userId: 'userId',
@@ -685,16 +954,16 @@ export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaM
 
 
 /**
- * Reference to a field of type 'Platform'
+ * Reference to a field of type 'DreamType'
  */
-export type EnumPlatformFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Platform'>
+export type EnumDreamTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DreamType'>
     
 
 
 /**
- * Reference to a field of type 'Platform[]'
+ * Reference to a field of type 'DreamType[]'
  */
-export type ListEnumPlatformFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Platform[]'>
+export type ListEnumDreamTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DreamType[]'>
     
 
 
@@ -709,6 +978,34 @@ export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'In
  * Reference to a field of type 'Int[]'
  */
 export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Platform'
+ */
+export type EnumPlatformFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Platform'>
+    
+
+
+/**
+ * Reference to a field of type 'Platform[]'
+ */
+export type ListEnumPlatformFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Platform[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Float'
+ */
+export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+    
+
+
+/**
+ * Reference to a field of type 'Float[]'
+ */
+export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
     
 
 /**
@@ -822,6 +1119,9 @@ export type PrismaClientOptions = ({
 }
 export type GlobalOmitConfig = {
   user?: Prisma.UserOmit
+  dream?: Prisma.DreamOmit
+  dreamEntity?: Prisma.DreamEntityOmit
+  dreamQuestion?: Prisma.DreamQuestionOmit
   fCMToken?: Prisma.FCMTokenOmit
 }
 

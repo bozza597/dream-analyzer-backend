@@ -52,6 +52,9 @@ export const AnyNull = runtime.AnyNull
 
 export const ModelName = {
   User: 'User',
+  Dream: 'Dream',
+  DreamEntity: 'DreamEntity',
+  DreamQuestion: 'DreamQuestion',
   FCMToken: 'FCMToken'
 } as const
 
@@ -86,6 +89,50 @@ export const UserScalarFieldEnum = {
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+
+
+export const DreamScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  type: 'type',
+  title: 'title',
+  content: 'content',
+  emotions: 'emotions',
+  vividness: 'vividness',
+  occurredAt: 'occurredAt',
+  summary: 'summary',
+  interpretation: 'interpretation',
+  analyzedAt: 'analyzedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type DreamScalarFieldEnum = (typeof DreamScalarFieldEnum)[keyof typeof DreamScalarFieldEnum]
+
+
+export const DreamEntityScalarFieldEnum = {
+  id: 'id',
+  dreamId: 'dreamId',
+  key: 'key',
+  name: 'name',
+  meaning: 'meaning',
+  createdAt: 'createdAt'
+} as const
+
+export type DreamEntityScalarFieldEnum = (typeof DreamEntityScalarFieldEnum)[keyof typeof DreamEntityScalarFieldEnum]
+
+
+export const DreamQuestionScalarFieldEnum = {
+  id: 'id',
+  dreamId: 'dreamId',
+  question: 'question',
+  answer: 'answer',
+  position: 'position',
+  createdAt: 'createdAt'
+} as const
+
+export type DreamQuestionScalarFieldEnum = (typeof DreamQuestionScalarFieldEnum)[keyof typeof DreamQuestionScalarFieldEnum]
 
 
 export const FCMTokenScalarFieldEnum = {
