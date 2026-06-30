@@ -33,6 +33,7 @@ export type UserMinAggregateOutputType = {
   timezone: string | null
   lastAppVersionUsed: string | null
   lastAccess: Date | null
+  onboardedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
   deletedAt: Date | null
@@ -47,6 +48,7 @@ export type UserMaxAggregateOutputType = {
   timezone: string | null
   lastAppVersionUsed: string | null
   lastAccess: Date | null
+  onboardedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
   deletedAt: Date | null
@@ -61,6 +63,7 @@ export type UserCountAggregateOutputType = {
   timezone: number
   lastAppVersionUsed: number
   lastAccess: number
+  onboardedAt: number
   createdAt: number
   updatedAt: number
   deletedAt: number
@@ -77,6 +80,7 @@ export type UserMinAggregateInputType = {
   timezone?: true
   lastAppVersionUsed?: true
   lastAccess?: true
+  onboardedAt?: true
   createdAt?: true
   updatedAt?: true
   deletedAt?: true
@@ -91,6 +95,7 @@ export type UserMaxAggregateInputType = {
   timezone?: true
   lastAppVersionUsed?: true
   lastAccess?: true
+  onboardedAt?: true
   createdAt?: true
   updatedAt?: true
   deletedAt?: true
@@ -105,6 +110,7 @@ export type UserCountAggregateInputType = {
   timezone?: true
   lastAppVersionUsed?: true
   lastAccess?: true
+  onboardedAt?: true
   createdAt?: true
   updatedAt?: true
   deletedAt?: true
@@ -192,6 +198,7 @@ export type UserGroupByOutputType = {
   timezone: string | null
   lastAppVersionUsed: string | null
   lastAccess: Date | null
+  onboardedAt: Date | null
   createdAt: Date
   updatedAt: Date
   deletedAt: Date | null
@@ -227,6 +234,7 @@ export type UserWhereInput = {
   timezone?: Prisma.StringNullableFilter<"User"> | string | null
   lastAppVersionUsed?: Prisma.StringNullableFilter<"User"> | string | null
   lastAccess?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  onboardedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   deletedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
@@ -243,6 +251,7 @@ export type UserOrderByWithRelationInput = {
   timezone?: Prisma.SortOrderInput | Prisma.SortOrder
   lastAppVersionUsed?: Prisma.SortOrderInput | Prisma.SortOrder
   lastAccess?: Prisma.SortOrderInput | Prisma.SortOrder
+  onboardedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -262,6 +271,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   timezone?: Prisma.StringNullableFilter<"User"> | string | null
   lastAppVersionUsed?: Prisma.StringNullableFilter<"User"> | string | null
   lastAccess?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  onboardedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   deletedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
@@ -278,6 +288,7 @@ export type UserOrderByWithAggregationInput = {
   timezone?: Prisma.SortOrderInput | Prisma.SortOrder
   lastAppVersionUsed?: Prisma.SortOrderInput | Prisma.SortOrder
   lastAccess?: Prisma.SortOrderInput | Prisma.SortOrder
+  onboardedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -298,6 +309,7 @@ export type UserScalarWhereWithAggregatesInput = {
   timezone?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   lastAppVersionUsed?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   lastAccess?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
+  onboardedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
@@ -312,6 +324,7 @@ export type UserCreateInput = {
   timezone?: string | null
   lastAppVersionUsed?: string | null
   lastAccess?: Date | string | null
+  onboardedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -328,6 +341,7 @@ export type UserUncheckedCreateInput = {
   timezone?: string | null
   lastAppVersionUsed?: string | null
   lastAccess?: Date | string | null
+  onboardedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -344,6 +358,7 @@ export type UserUpdateInput = {
   timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastAppVersionUsed?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastAccess?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  onboardedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -360,6 +375,7 @@ export type UserUncheckedUpdateInput = {
   timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastAppVersionUsed?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastAccess?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  onboardedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -376,6 +392,7 @@ export type UserCreateManyInput = {
   timezone?: string | null
   lastAppVersionUsed?: string | null
   lastAccess?: Date | string | null
+  onboardedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -390,6 +407,7 @@ export type UserUpdateManyMutationInput = {
   timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastAppVersionUsed?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastAccess?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  onboardedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -404,6 +422,7 @@ export type UserUncheckedUpdateManyInput = {
   timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastAppVersionUsed?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastAccess?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  onboardedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -418,6 +437,7 @@ export type UserCountOrderByAggregateInput = {
   timezone?: Prisma.SortOrder
   lastAppVersionUsed?: Prisma.SortOrder
   lastAccess?: Prisma.SortOrder
+  onboardedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrder
@@ -432,6 +452,7 @@ export type UserMaxOrderByAggregateInput = {
   timezone?: Prisma.SortOrder
   lastAppVersionUsed?: Prisma.SortOrder
   lastAccess?: Prisma.SortOrder
+  onboardedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrder
@@ -446,6 +467,7 @@ export type UserMinOrderByAggregateInput = {
   timezone?: Prisma.SortOrder
   lastAppVersionUsed?: Prisma.SortOrder
   lastAccess?: Prisma.SortOrder
+  onboardedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrder
@@ -513,6 +535,7 @@ export type UserCreateWithoutDreamsInput = {
   timezone?: string | null
   lastAppVersionUsed?: string | null
   lastAccess?: Date | string | null
+  onboardedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -528,6 +551,7 @@ export type UserUncheckedCreateWithoutDreamsInput = {
   timezone?: string | null
   lastAppVersionUsed?: string | null
   lastAccess?: Date | string | null
+  onboardedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -559,6 +583,7 @@ export type UserUpdateWithoutDreamsInput = {
   timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastAppVersionUsed?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastAccess?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  onboardedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -574,6 +599,7 @@ export type UserUncheckedUpdateWithoutDreamsInput = {
   timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastAppVersionUsed?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastAccess?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  onboardedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -589,6 +615,7 @@ export type UserCreateWithoutFcmTokensInput = {
   timezone?: string | null
   lastAppVersionUsed?: string | null
   lastAccess?: Date | string | null
+  onboardedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -604,6 +631,7 @@ export type UserUncheckedCreateWithoutFcmTokensInput = {
   timezone?: string | null
   lastAppVersionUsed?: string | null
   lastAccess?: Date | string | null
+  onboardedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -635,6 +663,7 @@ export type UserUpdateWithoutFcmTokensInput = {
   timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastAppVersionUsed?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastAccess?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  onboardedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -650,6 +679,7 @@ export type UserUncheckedUpdateWithoutFcmTokensInput = {
   timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastAppVersionUsed?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastAccess?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  onboardedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -705,6 +735,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   timezone?: boolean
   lastAppVersionUsed?: boolean
   lastAccess?: boolean
+  onboardedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   deletedAt?: boolean
@@ -722,6 +753,7 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   timezone?: boolean
   lastAppVersionUsed?: boolean
   lastAccess?: boolean
+  onboardedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   deletedAt?: boolean
@@ -736,6 +768,7 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   timezone?: boolean
   lastAppVersionUsed?: boolean
   lastAccess?: boolean
+  onboardedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   deletedAt?: boolean
@@ -750,12 +783,13 @@ export type UserSelectScalar = {
   timezone?: boolean
   lastAppVersionUsed?: boolean
   lastAccess?: boolean
+  onboardedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   deletedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "name" | "isAnonymous" | "country" | "timezone" | "lastAppVersionUsed" | "lastAccess" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "name" | "isAnonymous" | "country" | "timezone" | "lastAppVersionUsed" | "lastAccess" | "onboardedAt" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   fcmTokens?: boolean | Prisma.User$fcmTokensArgs<ExtArgs>
   dreams?: boolean | Prisma.User$dreamsArgs<ExtArgs>
@@ -779,6 +813,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     timezone: string | null
     lastAppVersionUsed: string | null
     lastAccess: Date | null
+    onboardedAt: Date | null
     createdAt: Date
     updatedAt: Date
     deletedAt: Date | null
@@ -1215,6 +1250,7 @@ export interface UserFieldRefs {
   readonly timezone: Prisma.FieldRef<"User", 'String'>
   readonly lastAppVersionUsed: Prisma.FieldRef<"User", 'String'>
   readonly lastAccess: Prisma.FieldRef<"User", 'DateTime'>
+  readonly onboardedAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly deletedAt: Prisma.FieldRef<"User", 'DateTime'>

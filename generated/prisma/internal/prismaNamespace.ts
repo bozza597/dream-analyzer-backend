@@ -826,6 +826,7 @@ export const UserScalarFieldEnum = {
   timezone: 'timezone',
   lastAppVersionUsed: 'lastAppVersionUsed',
   lastAccess: 'lastAccess',
+  onboardedAt: 'onboardedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   deletedAt: 'deletedAt'

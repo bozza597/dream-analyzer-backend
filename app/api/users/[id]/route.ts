@@ -34,13 +34,19 @@ export const PUT = async (req: NextRequest, { params }: { params: Promise<{ id: 
     }
 
     const body = await req.json()
-    const { 
+    const { name, onboardingCompleted } = body
 
-    } = body
+    const data: { name?: string; onboardedAt?: Date } = {}
 
-    return ctx.services.users.updateUserById(user.id, {
-     
-    })
+    if (typeof name === "string" && name.trim()) {
+      data.name = name.trim()
+    }
+
+    if (onboardingCompleted) {
+      data.onboardedAt = new Date()
+    }
+
+    return ctx.services.users.updateUserById(user.id, data)
   })
 }
 
