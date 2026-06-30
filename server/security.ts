@@ -9,6 +9,7 @@ import { UsersAdapter } from "./adapters/db/users.adapter";
 import { UserModel } from "./models/User";
 import { FileAdapter } from "./adapters/file.adapter";
 import { UsersService } from "./services/users.service";
+import { db, DBClient } from "./db";
 
 if (!getApps().length) {
   try {

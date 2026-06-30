@@ -1,0 +1,39 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Platform {
+  IOS
+  ANDROID
+  WEB
+}
+
+model User {
+  id                 String    @id
+  email              String?   @unique
+  name               String?
+  isAnonymous        Boolean   @default(false)
+  country            String?
+  timezone           String?
+  lastAppVersionUsed String?
+  lastAccess         DateTime?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+  deletedAt          DateTime?
+  
+  fcmTokens FCMToken[]
+}
+
+model FCMToken {
+  token     String   @id
+  userId    String
+  platform  Platform
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+}

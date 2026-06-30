@@ -1,4 +1,5 @@
 import { Platform } from "@/generated/prisma/enums";
+import { Prisma } from "@/generated/prisma/client";
 import { DBClient } from "@/server/db";
 import { UserModel } from "@/server/models/User";
 
@@ -12,32 +13,7 @@ export class UsersAdapter {
         id
       },
       include: {
-        couples: {
-          where: {
-            deletedAt: null
-          },
-          include: {
-            challenges: {
-              orderBy: {
-                assignedAt: "desc"
-              },
-              take: 10
-            }
-          }
-        },
-        partners: {
-          where: {
-            deletedAt: null
-          },
-          include: {
-            challenges: {
-              orderBy: {
-                assignedAt: "desc"
-              },
-              take: 10
-            }
-          }
-        }
+        
       }
     })
 
@@ -45,16 +21,13 @@ export class UsersAdapter {
       return null
     }
 
-    const couple = (user.couples.length > 0 || user.partners.length > 0) ? (user.couples[0] || user.partners[0]) : null;
-
     return {
       ...user,
-      couple: couple,
     }
   }
 
   async insert(data: Partial<UserModel>) {
-    return this.db.user.create({ data })
+    return this.db.user.create({ data: data as Prisma.UserCreateInput })
   }
 
   async updateById(id: string, data: Partial<UserModel>) {
@@ -107,45 +80,5 @@ export class UsersAdapter {
         userId
       }
     })
-  }
-
-  async getFCMTokensByCoupleId(coupleId: string) {
-    // Get the couple to find both user IDs
-    const couple = await this.db.couple.findUnique({
-      where: {
-        id: coupleId,
-        deletedAt: null
-      },
-      select: {
-        createdById: true,
-        partnerId: true
-      }
-    });
-
-    if (!couple) {
-      return [];
-    }
-
-    // Collect user IDs (filter out null partnerId)
-    const userIds = [couple.createdById];
-    if (couple.partnerId) {
-      userIds.push(couple.partnerId);
-    }
-
-    // Get FCM tokens for all users in the couple, including user country for localization
-    return this.db.fCMToken.findMany({
-      where: {
-        userId: {
-          in: userIds
-        }
-      },
-      include: {
-        user: {
-          select: {
-            country: true
-          }
-        }
-      }
-    });
   }
 }
