@@ -385,6 +385,7 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 
 export const ModelName = {
   User: 'User',
+  Recap: 'Recap',
   Dream: 'Dream',
   DreamEntity: 'DreamEntity',
   DreamQuestion: 'DreamQuestion',
@@ -404,7 +405,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "dream" | "dreamEntity" | "dreamQuestion" | "fCMToken"
+    modelProps: "user" | "recap" | "dream" | "dreamEntity" | "dreamQuestion" | "fCMToken"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -479,6 +480,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.UserCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.UserCountAggregateOutputType> | number
+        }
+      }
+    }
+    Recap: {
+      payload: Prisma.$RecapPayload<ExtArgs>
+      fields: Prisma.RecapFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.RecapFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecapPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.RecapFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecapPayload>
+        }
+        findFirst: {
+          args: Prisma.RecapFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecapPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.RecapFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecapPayload>
+        }
+        findMany: {
+          args: Prisma.RecapFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecapPayload>[]
+        }
+        create: {
+          args: Prisma.RecapCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecapPayload>
+        }
+        createMany: {
+          args: Prisma.RecapCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.RecapCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecapPayload>[]
+        }
+        delete: {
+          args: Prisma.RecapDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecapPayload>
+        }
+        update: {
+          args: Prisma.RecapUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecapPayload>
+        }
+        deleteMany: {
+          args: Prisma.RecapDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.RecapUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.RecapUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecapPayload>[]
+        }
+        upsert: {
+          args: Prisma.RecapUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecapPayload>
+        }
+        aggregate: {
+          args: Prisma.RecapAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateRecap>
+        }
+        groupBy: {
+          args: Prisma.RecapGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.RecapGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.RecapCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.RecapCountAggregateOutputType> | number
         }
       }
     }
@@ -835,6 +910,22 @@ export const UserScalarFieldEnum = {
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
 
 
+export const RecapScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  period: 'period',
+  periodStart: 'periodStart',
+  periodEnd: 'periodEnd',
+  headline: 'headline',
+  data: 'data',
+  generatedAt: 'generatedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type RecapScalarFieldEnum = (typeof RecapScalarFieldEnum)[keyof typeof RecapScalarFieldEnum]
+
+
 export const DreamScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
@@ -897,6 +988,13 @@ export const SortOrder = {
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
+
+
 export const QueryMode = {
   default: 'default',
   insensitive: 'insensitive'
@@ -911,6 +1009,15 @@ export const NullsOrder = {
 } as const
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+export const JsonNullValueFilter = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+  AnyNull: AnyNull
+} as const
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 
 
 
@@ -951,6 +1058,34 @@ export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel
  * Reference to a field of type 'DateTime[]'
  */
 export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
+    
+
+
+/**
+ * Reference to a field of type 'RecapPeriod'
+ */
+export type EnumRecapPeriodFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RecapPeriod'>
+    
+
+
+/**
+ * Reference to a field of type 'RecapPeriod[]'
+ */
+export type ListEnumRecapPeriodFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RecapPeriod[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Json'
+ */
+export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+    
+
+
+/**
+ * Reference to a field of type 'QueryMode'
+ */
+export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
     
 
 
@@ -1120,6 +1255,7 @@ export type PrismaClientOptions = ({
 }
 export type GlobalOmitConfig = {
   user?: Prisma.UserOmit
+  recap?: Prisma.RecapOmit
   dream?: Prisma.DreamOmit
   dreamEntity?: Prisma.DreamEntityOmit
   dreamQuestion?: Prisma.DreamQuestionOmit

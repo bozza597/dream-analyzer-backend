@@ -2,6 +2,8 @@ import { protectedHandler } from "@/server/security";
 import ApplicationError, { ErrorCode } from "@/server/types/ApplicationError";
 import { NextRequest } from "next/server";
 
+// Overview: the current (in-progress) period + the list of finished periods that
+// have dreams. Listing does NOT generate any recap.
 export const GET = async (req: NextRequest) => {
   return protectedHandler(req, async (ctx) => {
     const { user } = ctx;
@@ -10,12 +12,6 @@ export const GET = async (req: NextRequest) => {
     const periodParam = req.nextUrl.searchParams.get("period");
     const period = periodParam === "month" ? "month" : "week";
 
-    const refParam = req.nextUrl.searchParams.get("reference");
-    const reference = refParam ? new Date(refParam) : new Date();
-    if (isNaN(reference.getTime())) {
-      throw new ApplicationError("Data di riferimento non valida", ErrorCode.BAD_REQUEST);
-    }
-
-    return ctx.services.dreams.getRecap(user.id, period, reference);
+    return ctx.services.recaps.getOverview(user.id, period);
   });
 };

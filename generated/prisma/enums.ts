@@ -25,3 +25,11 @@ export const DreamType = {
 } as const
 
 export type DreamType = (typeof DreamType)[keyof typeof DreamType]
+
+
+export const RecapPeriod = {
+  WEEK: 'WEEK',
+  MONTH: 'MONTH'
+} as const
+
+export type RecapPeriod = (typeof RecapPeriod)[keyof typeof RecapPeriod]

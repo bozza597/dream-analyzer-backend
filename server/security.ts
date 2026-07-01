@@ -7,10 +7,12 @@ import ApplicationError, { ErrorCode } from "./types/ApplicationError"
 import { NextRequest, NextResponse } from "next/server"
 import { UsersAdapter } from "./adapters/db/users.adapter";
 import { DreamsAdapter } from "./adapters/db/dreams.adapter";
+import { RecapsAdapter } from "./adapters/db/recaps.adapter";
 import { UserModel } from "./models/User";
 import { FileAdapter } from "./adapters/file.adapter";
 import { UsersService } from "./services/users.service";
 import { DreamsService } from "./services/dreams.service";
+import { RecapsService } from "./services/recaps.service";
 import { AnalysisService } from "./services/analysis.service";
 import { db, DBClient } from "./db";
 
@@ -30,11 +32,13 @@ if (!getApps().length) {
 const initAdapters = async (db: DBClient): Promise<Adapters> => {
   const usersAdapter = new UsersAdapter(db)
   const dreamsAdapter = new DreamsAdapter(db)
+  const recapsAdapter = new RecapsAdapter(db)
 
   return {
     db: {
       users: usersAdapter,
       dreams: dreamsAdapter,
+      recaps: recapsAdapter,
     },
     file: new FileAdapter(),
   }
@@ -45,6 +49,7 @@ const buildContext = async (req: NextRequest): Promise<AppContext> => {
   const usersService = new UsersService(adapters.db.users)
   const analysisService = new AnalysisService()
   const dreamsService = new DreamsService(adapters.db.dreams, analysisService)
+  const recapsService = new RecapsService(adapters.db.dreams, adapters.db.recaps, analysisService)
 
   const authorization = req.headers.get("Authorization")
   const token = authorization?.replace("Bearer ", "")
@@ -74,6 +79,7 @@ const buildContext = async (req: NextRequest): Promise<AppContext> => {
     services: {
       users: usersService,
       dreams: dreamsService,
+      recaps: recapsService,
     }
   }
 }

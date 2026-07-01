@@ -19,6 +19,11 @@ enum DreamType {
   LUCID
 }
 
+enum RecapPeriod {
+  WEEK
+  MONTH
+}
+
 model User {
   id                 String    @id
   email              String?   @unique
@@ -35,6 +40,27 @@ model User {
 
   fcmTokens FCMToken[]
   dreams    Dream[]
+  recaps    Recap[]
+}
+
+// A persisted weekly/monthly recap. Generated lazily, only for finished periods.
+model Recap {
+  id          String      @id @default(cuid())
+  userId      String
+  period      RecapPeriod
+  periodStart DateTime
+  periodEnd   DateTime
+  headline    String
+  // Full computed payload (counts, emotions, patterns, recurringSymbols).
+  data        Json
+  generatedAt DateTime    @default(now())
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@unique([userId, period, periodStart])
+  @@index([userId, period])
 }
 
 model Dream {

@@ -1,8 +1,9 @@
-import Anthropic from "@anthropic-ai/sdk";
+import OpenAI from "openai";
 import { DreamType } from "@/generated/prisma/enums";
 import ApplicationError, { ErrorCode } from "@/server/types/ApplicationError";
 
-const MODEL = "claude-opus-4-8";
+// A small, low-cost OpenAI model with structured-output (json_schema) support.
+const MODEL = "gpt-4o-mini";
 
 export type AnalysisInput = {
   type: DreamType;
@@ -35,6 +36,7 @@ const TYPE_LABEL: Record<DreamType, string> = {
   LUCID: "sogno lucido",
 };
 
+// JSON schema for the analyzer output (OpenAI strict structured outputs).
 const analysisSchema = {
   type: "object",
   additionalProperties: false,
@@ -67,29 +69,67 @@ const analysisSchema = {
     },
   },
   required: ["summary", "interpretation", "entities", "questions"],
-} as const;
+};
+
+const recapSchema = {
+  type: "object",
+  additionalProperties: false,
+  properties: {
+    headline: {
+      type: "string",
+      description: "Un titolo narrativo (1-2 frasi, max 30 parole) che riassume con calore l'andamento onirico del periodo.",
+    },
+  },
+  required: ["headline"],
+};
 
 export class AnalysisService {
-  private client: Anthropic | null;
+  private client: OpenAI | null;
 
   constructor() {
-    const apiKey = process.env.ANTHROPIC_API_KEY;
-    this.client = apiKey ? new Anthropic({ apiKey }) : null;
+    const apiKey = process.env.OPENAI_API_KEY;
+    this.client = apiKey ? new OpenAI({ apiKey }) : null;
   }
 
-  private getClient(): Anthropic {
+  private getClient(): OpenAI {
     if (!this.client) {
       throw new ApplicationError(
-        "Analisi non disponibile: ANTHROPIC_API_KEY non configurata",
+        "Analisi non disponibile: OPENAI_API_KEY non configurata",
         ErrorCode.INTERNAL_SERVER_ERROR
       );
     }
     return this.client;
   }
 
-  async analyzeDream(input: AnalysisInput): Promise<AnalysisResult> {
+  // Wraps an OpenAI call with logging: operation, model, duration, token usage, outcome.
+  private async call(
+    operation: string,
+    params: OpenAI.Chat.Completions.ChatCompletionCreateParamsNonStreaming
+  ): Promise<OpenAI.Chat.Completions.ChatCompletion> {
     const client = this.getClient();
+    const start = Date.now();
+    console.log(`>>> [OpenAI] ${operation} | model=${params.model}`);
+    try {
+      const completion = await client.chat.completions.create(params);
+      const ms = Date.now() - start;
+      const u = completion.usage;
+      const tokens = u
+        ? ` | tokens: prompt=${u.prompt_tokens} completion=${u.completion_tokens} total=${u.total_tokens}`
+        : "";
+      console.log(
+        `<<< [OpenAI] ${operation} | model=${params.model} | ${ms}ms` +
+          tokens +
+          ` | finish=${completion.choices[0]?.finish_reason}`
+      );
+      return completion;
+    } catch (e) {
+      const ms = Date.now() - start;
+      console.error(`!!! [OpenAI] ${operation} FAILED | model=${params.model} | ${ms}ms`, e);
+      throw e;
+    }
+  }
 
+  async analyzeDream(input: AnalysisInput): Promise<AnalysisResult> {
     const typeLabel = TYPE_LABEL[input.type];
     const parts: string[] = [`Tipo: ${typeLabel}.`, `Racconto del sogno:\n"""${input.content}"""`];
 
@@ -115,45 +155,44 @@ export class AnalysisService {
       "Le domande di approfondimento sono brevi, aperte e rispettose: aiutano a esplorare, non a giudicare.",
     ].join(" ");
 
-    const response = await client.messages.create({
+    const completion = await this.call("analyzeDream", {
       model: MODEL,
       max_tokens: 1500,
-      system,
-      output_config: { format: { type: "json_schema", schema: analysisSchema } },
-      messages: [{ role: "user", content: parts.join("\n\n") }],
+      messages: [
+        { role: "system", content: system },
+        { role: "user", content: parts.join("\n\n") },
+      ],
+      response_format: {
+        type: "json_schema",
+        json_schema: { name: "dream_analysis", strict: true, schema: analysisSchema },
+      },
     });
 
-    return this.parseResult(response);
+    const parsed = this.parseJson<AnalysisResult>(completion);
+    return {
+      summary: parsed.summary ?? "",
+      interpretation: parsed.interpretation ?? "",
+      entities: Array.isArray(parsed.entities) ? parsed.entities.filter((e) => e?.name && e?.meaning) : [],
+      questions: Array.isArray(parsed.questions) ? parsed.questions.filter(Boolean) : [],
+    };
   }
 
   // Short narrative headline for the weekly / monthly recap. Best-effort: callers
   // should fall back to a computed string if this throws.
   async generateRecapHeadline(stats: RecapStats): Promise<string> {
-    const client = this.getClient();
-
     const periodLabel = stats.period === "week" ? "settimana" : "mese";
     const symbols = stats.recurringSymbols.slice(0, 3).map((s) => `${s.name} (${s.count}×)`).join(", ");
     const emotions = stats.topEmotions.slice(0, 3).map((e) => `${e.label} ${e.pct}%`).join(", ");
 
-    const summarySchema = {
-      type: "object",
-      additionalProperties: false,
-      properties: {
-        headline: {
-          type: "string",
-          description: "Un titolo narrativo (1-2 frasi, max 30 parole) che riassume con calore l'andamento onirico del periodo.",
-        },
-      },
-      required: ["headline"],
-    } as const;
-
-    const response = await client.messages.create({
+    const completion = await this.call("generateRecapHeadline", {
       model: MODEL,
-      max_tokens: 400,
-      system:
-        "Sei un narratore gentile che riassume l'andamento onirico di una persona in italiano, con tono caldo e poetico. Niente diagnosi.",
-      output_config: { format: { type: "json_schema", schema: summarySchema } },
+      max_tokens: 300,
       messages: [
+        {
+          role: "system",
+          content:
+            "Sei un narratore gentile che riassume l'andamento onirico di una persona in italiano, con tono caldo e poetico. Niente diagnosi.",
+        },
         {
           role: "user",
           content:
@@ -164,29 +203,26 @@ export class AnalysisService {
             `Scrivi un titolo narrativo per questo recap.`,
         },
       ],
+      response_format: {
+        type: "json_schema",
+        json_schema: { name: "recap_headline", strict: true, schema: recapSchema },
+      },
     });
 
-    const parsed = this.parseJson<{ headline: string }>(response);
-    return parsed.headline;
+    return this.parseJson<{ headline: string }>(completion).headline;
   }
 
-  private parseResult(response: Anthropic.Message): AnalysisResult {
-    const parsed = this.parseJson<AnalysisResult>(response);
-    return {
-      summary: parsed.summary ?? "",
-      interpretation: parsed.interpretation ?? "",
-      entities: Array.isArray(parsed.entities) ? parsed.entities.filter((e) => e?.name && e?.meaning) : [],
-      questions: Array.isArray(parsed.questions) ? parsed.questions.filter(Boolean) : [],
-    };
-  }
-
-  private parseJson<T>(response: Anthropic.Message): T {
-    const textBlock = response.content.find((b): b is Anthropic.TextBlock => b.type === "text");
-    if (!textBlock) {
+  private parseJson<T>(completion: OpenAI.Chat.Completions.ChatCompletion): T {
+    const message = completion.choices[0]?.message;
+    if (message?.refusal) {
+      throw new ApplicationError("L'analizzatore ha rifiutato la richiesta", ErrorCode.INTERNAL_SERVER_ERROR);
+    }
+    const text = message?.content;
+    if (!text) {
       throw new ApplicationError("Risposta dell'analizzatore vuota", ErrorCode.INTERNAL_SERVER_ERROR);
     }
     try {
-      return JSON.parse(textBlock.text) as T;
+      return JSON.parse(text) as T;
     } catch {
       throw new ApplicationError("Risposta dell'analizzatore non valida", ErrorCode.INTERNAL_SERVER_ERROR);
     }
