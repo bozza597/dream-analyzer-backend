@@ -70,8 +70,10 @@ export class DreamsAdapter {
     });
   }
 
-  // Replaces a dream's analysis output (interpretation, summary, symbols, questions) atomically.
+  // Replaces a dream's analysis output (title, interpretation, summary, symbols, questions) atomically.
+  // `title` is omitted (left untouched) when undefined, so an already-set title is never clobbered.
   async replaceAnalysis(id: string, data: {
+    title?: string;
     summary: string;
     interpretation: string;
     entities: { key: string; name: string; meaning: string }[];
@@ -84,6 +86,7 @@ export class DreamsAdapter {
       return tx.dream.update({
         where: { id },
         data: {
+          title: data.title,
           summary: data.summary,
           interpretation: data.interpretation,
           analyzedAt: new Date(),

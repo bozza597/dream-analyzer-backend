@@ -88,6 +88,8 @@ export class DreamsService {
     });
 
     return this.dreamsAdapter.replaceAnalysis(id, {
+      // Don't override a title the user already has (set at creation or on a previous analysis).
+      title: dream.title?.trim() ? undefined : result.title || undefined,
       summary: result.summary,
       interpretation: result.interpretation,
       entities: result.entities.map((e) => ({ key: normaliseKey(e.name), name: e.name, meaning: e.meaning })),

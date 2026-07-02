@@ -15,6 +15,7 @@ export type AnalysisInput = {
 };
 
 export type AnalysisResult = {
+  title: string;
   summary: string;
   interpretation: string;
   entities: { name: string; meaning: string }[];
@@ -55,6 +56,11 @@ const analysisSchema = {
   type: "object",
   additionalProperties: false,
   properties: {
+    title: {
+      type: "string",
+      description:
+        "Un titolo breve ed evocativo per il sogno (3-6 parole, in italiano), senza virgolette né punto finale.",
+    },
     summary: {
       type: "string",
       description: "Una frase breve e poetica (massimo 25 parole) che cattura il senso del sogno.",
@@ -82,7 +88,7 @@ const analysisSchema = {
       items: { type: "string" },
     },
   },
-  required: ["summary", "interpretation", "entities", "questions"],
+  required: ["title", "summary", "interpretation", "entities", "questions"],
 };
 
 const recapSchema = {
@@ -173,6 +179,7 @@ export class AnalysisService {
       "Non dai diagnosi mediche né consigli medici. Eviti toni allarmistici, anche per gli incubi: per un incubo accogli la paura con delicatezza e cerchi il messaggio protettivo del sogno.",
       "Estrai i simboli concreti realmente presenti nel racconto e dai a ciascuno un significato calato nel contesto, non generico.",
       "Le domande di approfondimento sono brevi, aperte e rispettose: aiutano a esplorare, non a giudicare.",
+      "Dai al sogno un titolo breve ed evocativo che ne catturi l'immagine o il tema centrale, senza virgolette.",
     ].join(" ");
 
     const completion = await this.call("analyzeDream", {
@@ -190,6 +197,7 @@ export class AnalysisService {
 
     const parsed = this.parseJson<AnalysisResult>(completion);
     return {
+      title: parsed.title?.trim() ?? "",
       summary: parsed.summary ?? "",
       interpretation: parsed.interpretation ?? "",
       entities: Array.isArray(parsed.entities) ? parsed.entities.filter((e) => e?.name && e?.meaning) : [],
