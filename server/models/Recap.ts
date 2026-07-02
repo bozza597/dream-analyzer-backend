@@ -7,7 +7,8 @@ export type RecapData = {
   period: "week" | "month";
   from: string;
   to: string;
-  headline: string;
+  title: string;
+  evaluation: string;
   counts: { dreams: number; nightmares: number; lucid: number; total: number };
   emotions: { label: string; pct: number }[];
   patterns: { type: "symbol" | "nightmare"; text: string }[];

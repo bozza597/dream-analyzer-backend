@@ -121,7 +121,7 @@ export class RecapsService {
       period: enumPeriod,
       periodStart: start,
       periodEnd: end,
-      headline: payload.headline,
+      headline: payload.title,
       payload,
     });
 
@@ -142,6 +142,13 @@ export class RecapsService {
     const recurringSymbols = recurringSymbols_(dreams);
     const patterns = derivePatterns(dreams, recurringSymbols);
 
+    const previousEntry = await this.recapsAdapter.findByPeriod(
+      userId,
+      toEnum(period),
+      previousPeriodStart(period, from)
+    );
+    const previous = previousEntry ? (previousEntry.data as unknown as RecapData) : null;
+
     const stats: RecapStats = {
       period,
       dreams: counts.dreams,
@@ -149,14 +156,24 @@ export class RecapsService {
       lucid: counts.lucid,
       topEmotions: emotions,
       recurringSymbols,
+      patterns,
+      previous: previous
+        ? {
+            total: previous.counts.total,
+            dreams: previous.counts.dreams,
+            nightmares: previous.counts.nightmares,
+            lucid: previous.counts.lucid,
+            topEmotions: previous.emotions,
+          }
+        : undefined,
     };
 
-    let headline = fallbackHeadline(period, counts);
+    let { title, evaluation } = fallbackSummary(period, counts, previous?.counts);
     if (counts.total > 0) {
       try {
-        headline = await this.analysisService.generateRecapHeadline(stats);
+        ({ title, evaluation } = await this.analysisService.generateRecapSummary(stats));
       } catch (e) {
-        console.error("Recap headline generation failed, using fallback", e);
+        console.error("Recap summary generation failed, using fallback", e);
       }
     }
 
@@ -164,7 +181,8 @@ export class RecapsService {
       period,
       from: toDayString(from),
       to: toDayString(to),
-      headline,
+      title,
+      evaluation,
       counts,
       emotions,
       patterns,
@@ -202,18 +220,25 @@ const periodEnd = (period: PeriodKey, start: Date): Date => {
   return new Date(Date.UTC(start.getUTCFullYear(), start.getUTCMonth(), start.getUTCDate() + 6, 23, 59, 59));
 };
 
+const previousPeriodStart = (period: PeriodKey, start: Date): Date => {
+  if (period === "month") {
+    return new Date(Date.UTC(start.getUTCFullYear(), start.getUTCMonth() - 1, 1));
+  }
+  return new Date(Date.UTC(start.getUTCFullYear(), start.getUTCMonth(), start.getUTCDate() - 7));
+};
+
+// Percentage of dreams in the period that included each emotion (a dream can
+// carry several emotions, so percentages need not add up to 100).
 const topEmotions = (dreams: DreamModel[]): { label: string; pct: number }[] => {
   const counts = new Map<string, number>();
-  let total = 0;
   for (const dream of dreams) {
     for (const emotion of dream.emotions) {
       counts.set(emotion, (counts.get(emotion) ?? 0) + 1);
-      total += 1;
     }
   }
-  if (total === 0) return [];
+  if (dreams.length === 0) return [];
   return [...counts.entries()]
-    .map(([label, n]) => ({ label, pct: Math.round((n / total) * 100) }))
+    .map(([label, n]) => ({ label, pct: Math.round((n / dreams.length) * 100) }))
     .sort((a, b) => b.pct - a.pct)
     .slice(0, 4);
 };
@@ -262,8 +287,22 @@ const derivePatterns = (
   return patterns;
 };
 
-const fallbackHeadline = (period: PeriodKey, counts: { dreams: number; nightmares: number; total: number }) => {
+const fallbackSummary = (
+  period: PeriodKey,
+  counts: { dreams: number; nightmares: number; total: number },
+  previousCounts?: { total: number }
+): { title: string; evaluation: string } => {
   const label = period === "week" ? "settimana" : "mese";
-  if (counts.total === 0) return `Nessun sogno registrato in questa ${label}.`;
-  return `${counts.total} notti raccolte: ${counts.dreams} sogni e ${counts.nightmares} incubi in questa ${label}.`;
+  const prevPhrase = period === "week" ? "alla settimana precedente" : "al mese precedente";
+  if (counts.total === 0) {
+    return { title: "Nessun sogno registrato", evaluation: `Non hai registrato sogni in questa ${label}.` };
+  }
+  let evaluation = `Hai registrato ${counts.total} notti in questa ${label}: ${counts.dreams} sogni e ${counts.nightmares} incubi.`;
+  if (previousCounts) {
+    const diff = counts.total - previousCounts.total;
+    if (diff > 0) evaluation += ` Rispetto ${prevPhrase} (${previousCounts.total} notti) sono ${diff} in più.`;
+    else if (diff < 0) evaluation += ` Rispetto ${prevPhrase} (${previousCounts.total} notti) sono ${-diff} in meno.`;
+    else evaluation += ` Lo stesso numero di notti ${period === "week" ? "della settimana precedente" : "del mese precedente"}.`;
+  }
+  return { title: `${counts.total} notti raccolte`, evaluation };
 };

@@ -28,6 +28,20 @@ export type RecapStats = {
   lucid: number;
   topEmotions: { label: string; pct: number }[];
   recurringSymbols: { name: string; count: number }[];
+  patterns: { type: "symbol" | "nightmare"; text: string }[];
+  // Same shape, computed for the immediately preceding period, if it was ever generated.
+  previous?: {
+    total: number;
+    dreams: number;
+    nightmares: number;
+    lucid: number;
+    topEmotions: { label: string; pct: number }[];
+  };
+};
+
+export type RecapSummary = {
+  title: string;
+  evaluation: string;
 };
 
 const TYPE_LABEL: Record<DreamType, string> = {
@@ -75,12 +89,18 @@ const recapSchema = {
   type: "object",
   additionalProperties: false,
   properties: {
-    headline: {
+    title: {
       type: "string",
-      description: "Un titolo narrativo (1-2 frasi, max 30 parole) che riassume con calore l'andamento onirico del periodo.",
+      description:
+        "Un titolo breve e diretto (3-6 parole) che nomina il tema dominante del periodo, senza toni poetici o metaforici.",
+    },
+    evaluation: {
+      type: "string",
+      description:
+        "3-5 frasi in italiano che mettono insieme i dati del periodo (numero di sogni/incubi/lucidi, emozioni prevalenti, simboli ricorrenti, pattern individuati) in una lettura d'insieme coerente. Se sono forniti i dati del periodo precedente, commenta esplicitamente come sono cambiati (aumento/calo di incubi, emozioni diverse, nuovi o scomparsi simboli ricorrenti). Tono caldo ma concreto e basato sui dati, non poetico. Niente diagnosi.",
     },
   },
-  required: ["headline"],
+  required: ["title", "evaluation"],
 };
 
 export class AnalysisService {
@@ -177,21 +197,28 @@ export class AnalysisService {
     };
   }
 
-  // Short narrative headline for the weekly / monthly recap. Best-effort: callers
-  // should fall back to a computed string if this throws.
-  async generateRecapHeadline(stats: RecapStats): Promise<string> {
+  // Title + data-driven evaluation for the weekly / monthly recap. Best-effort:
+  // callers should fall back to a computed summary if this throws.
+  async generateRecapSummary(stats: RecapStats): Promise<RecapSummary> {
     const periodLabel = stats.period === "week" ? "settimana" : "mese";
     const symbols = stats.recurringSymbols.slice(0, 3).map((s) => `${s.name} (${s.count}×)`).join(", ");
     const emotions = stats.topEmotions.slice(0, 3).map((e) => `${e.label} ${e.pct}%`).join(", ");
+    const patterns = stats.patterns.map((p) => p.text).join(" ");
+    const previousEmotions = stats.previous?.topEmotions.slice(0, 3).map((e) => `${e.label} ${e.pct}%`).join(", ");
+    const previous = stats.previous
+      ? `Periodo precedente: ${stats.previous.total} notti (${stats.previous.dreams} sogni, ${stats.previous.nightmares} incubi, ${stats.previous.lucid} lucidi)` +
+        (previousEmotions ? `, emozioni prevalenti: ${previousEmotions}` : "") +
+        ".\n"
+      : "";
 
-    const completion = await this.call("generateRecapHeadline", {
+    const completion = await this.call("generateRecapSummary", {
       model: MODEL,
-      max_tokens: 300,
+      max_tokens: 400,
       messages: [
         {
           role: "system",
           content:
-            "Sei un narratore gentile che riassume l'andamento onirico di una persona in italiano, con tono caldo e poetico. Niente diagnosi.",
+            "Sei un analista che osserva i dati onirici di una persona su un periodo di tempo e ne offre una lettura chiara e coerente, in italiano. Metti in relazione i numeri, le emozioni e i simboli ricorrenti invece di limitarti a elencarli. Tono caldo ma concreto, evita frasi generiche o poetiche. Niente diagnosi.",
         },
         {
           role: "user",
@@ -200,16 +227,19 @@ export class AnalysisService {
             `Sogni: ${stats.dreams}, incubi: ${stats.nightmares}, sogni lucidi: ${stats.lucid}.\n` +
             (emotions ? `Emozioni prevalenti: ${emotions}.\n` : "") +
             (symbols ? `Simboli ricorrenti: ${symbols}.\n` : "") +
-            `Scrivi un titolo narrativo per questo recap.`,
+            (patterns ? `Pattern individuati: ${patterns}\n` : "") +
+            previous +
+            `Scrivi un titolo e una valutazione d'insieme per questo recap.` +
+            (previous ? " Confronta esplicitamente con il periodo precedente." : ""),
         },
       ],
       response_format: {
         type: "json_schema",
-        json_schema: { name: "recap_headline", strict: true, schema: recapSchema },
+        json_schema: { name: "recap_summary", strict: true, schema: recapSchema },
       },
     });
 
-    return this.parseJson<{ headline: string }>(completion).headline;
+    return this.parseJson<RecapSummary>(completion);
   }
 
   private parseJson<T>(completion: OpenAI.Chat.Completions.ChatCompletion): T {
