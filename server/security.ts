@@ -2,7 +2,7 @@ import { Adapters, AppContext } from "./types/context.type"
 import { error } from "./types/http-response"
 import { UserRecord, getAuth } from "firebase-admin/auth"
 import * as admin from 'firebase-admin'
-import { getApps, initializeApp } from "firebase-admin/app";
+import { cert, getApps, initializeApp } from "firebase-admin/app";
 import ApplicationError, { ErrorCode } from "./types/ApplicationError"
 import { NextRequest, NextResponse } from "next/server"
 import { UsersAdapter } from "./adapters/db/users.adapter";
@@ -18,11 +18,12 @@ import { db, DBClient } from "./db";
 
 if (!getApps().length) {
   try {
-    //eslint-disable-next-line
-    const firebaseCredentials = require("./firebase-cred.json");
     initializeApp({
-      //eslint-disable-next-line
-      credential: admin.cert(firebaseCredentials),
+      credential: cert({
+        projectId: process.env.FIREBASE_PROJECT_ID,
+        clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+        privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, "\n"),
+      })
     });
   } catch (error) {
     console.error("Firebase initialization error:", error);
@@ -53,7 +54,7 @@ const buildContext = async (req: NextRequest): Promise<AppContext> => {
 
   const authorization = req.headers.get("Authorization")
   const token = authorization?.replace("Bearer ", "")
-  
+
   let user: UserModel | null = null
   let authUser: UserRecord | null = null
   if (token) {
@@ -103,7 +104,7 @@ export const authenticatedHandler = async (req: NextRequest, next: (ctx: AppCont
     if (!ctx.jwt) {
       throw new ApplicationError("User not authenticated", ErrorCode.UNAUTHORIZED_ERROR)
     }
-    
+
     return NextResponse.json(await next(ctx))
   } catch (e) {
     if (e instanceof ApplicationError) {
