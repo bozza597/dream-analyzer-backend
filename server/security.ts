@@ -21,6 +21,10 @@ const rawPrivateKey = process.env.FIREBASE_PRIVATE_KEY
 const privateKey = rawPrivateKey?.replace(/\\n/g, "\n")
 
 // TEMP DEBUG - remove after diagnosing invalid_grant issue
+const base64Payload = privateKey
+  ?.replace(/-----BEGIN PRIVATE KEY-----/, "")
+  ?.replace(/-----END PRIVATE KEY-----/, "")
+  ?.replace(/\s+/g, "")
 console.log("[firebase-debug]", {
   projectId: process.env.FIREBASE_PROJECT_ID,
   clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
@@ -31,6 +35,11 @@ console.log("[firebase-debug]", {
   endsWithQuote: rawPrivateKey?.endsWith('"'),
   newlineCount: (privateKey?.match(/\n/g) || []).length,
   doubleBackslashCount: (rawPrivateKey?.match(/\\\\n/g) || []).length,
+  startsWithHeader: privateKey?.startsWith("-----BEGIN PRIVATE KEY-----\n"),
+  endsWithFooterNewline: privateKey?.endsWith("-----END PRIVATE KEY-----\n"),
+  endsWithFooterNoNewline: privateKey?.endsWith("-----END PRIVATE KEY-----"),
+  base64PayloadLength: base64Payload?.length,
+  base64PayloadHash: base64Payload ? createHash("sha256").update(base64Payload).digest("hex") : null,
 })
 
 if (!getApps().length) {
