@@ -16,13 +16,28 @@ import { RecapsService } from "./services/recaps.service";
 import { AnalysisService } from "./services/analysis.service";
 import { db, DBClient } from "./db";
 
+// Hosting dashboards (Vercel included) don't strip quotes the way dotenv does locally,
+// so a value copied verbatim from a quoted .env line can arrive with literal wrapping
+// quotes still attached, silently corrupting the PEM and causing "Invalid JWT Signature".
+const normalizePrivateKey = (key?: string): string | undefined => {
+  if (!key) return key
+  let normalized = key.trim()
+  if (
+    (normalized.startsWith('"') && normalized.endsWith('"')) ||
+    (normalized.startsWith("'") && normalized.endsWith("'"))
+  ) {
+    normalized = normalized.slice(1, -1)
+  }
+  return normalized.replace(/\\n/g, "\n")
+}
+
 if (!getApps().length) {
   try {
     initializeApp({
       credential: cert({
         projectId: process.env.FIREBASE_PROJECT_ID,
         clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-        privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, "\n"),
+        privateKey: normalizePrivateKey(process.env.FIREBASE_PRIVATE_KEY),
       })
     });
   } catch (error) {
