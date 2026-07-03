@@ -16,28 +16,13 @@ import { RecapsService } from "./services/recaps.service";
 import { AnalysisService } from "./services/analysis.service";
 import { db, DBClient } from "./db";
 
-// Hosting dashboards (Vercel included) don't strip quotes the way dotenv does locally,
-// so a value copied verbatim from a quoted .env line can arrive with literal wrapping
-// quotes still attached, silently corrupting the PEM and causing "Invalid JWT Signature".
-const normalizePrivateKey = (key?: string): string | undefined => {
-  if (!key) return key
-  let normalized = key.trim()
-  if (
-    (normalized.startsWith('"') && normalized.endsWith('"')) ||
-    (normalized.startsWith("'") && normalized.endsWith("'"))
-  ) {
-    normalized = normalized.slice(1, -1)
-  }
-  return normalized.replace(/\\n/g, "\n")
-}
-
 if (!getApps().length) {
   try {
     initializeApp({
       credential: cert({
         projectId: process.env.FIREBASE_PROJECT_ID,
         clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-        privateKey: normalizePrivateKey(process.env.FIREBASE_PRIVATE_KEY),
+        privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, "\n"),
       })
     });
   } catch (error) {
@@ -68,17 +53,23 @@ const buildContext = async (req: NextRequest): Promise<AppContext> => {
   const recapsService = new RecapsService(adapters.db.dreams, adapters.db.recaps, analysisService)
 
   const authorization = req.headers.get("Authorization")
+  console.log("Authorization header:", authorization)
   const token = authorization?.replace("Bearer ", "")
+  console.log("Extracted token:", token)
 
   let user: UserModel | null = null
   let authUser: UserRecord | null = null
   if (token) {
     let decoded
     try {
+      console.log("Verifying token...")
       decoded = await getAuth().verifyIdToken(token ?? "")
+      console.log("Decoded token:", decoded)
       if (decoded) {
         authUser = await getAuth().getUser(decoded.uid)
+        console.log("Authenticated user:", authUser)
         user = await usersService.getUserById(decoded.uid)
+        console.log("User from database:", user)
       }
     } catch (e) {
       // User not authendicated
