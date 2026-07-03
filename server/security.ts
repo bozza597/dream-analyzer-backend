@@ -3,7 +3,6 @@ import { error } from "./types/http-response"
 import { UserRecord, getAuth } from "firebase-admin/auth"
 import * as admin from 'firebase-admin'
 import { cert, getApps, initializeApp } from "firebase-admin/app";
-import { createHash } from "node:crypto";
 import ApplicationError, { ErrorCode } from "./types/ApplicationError"
 import { NextRequest, NextResponse } from "next/server"
 import { UsersAdapter } from "./adapters/db/users.adapter";
@@ -17,38 +16,13 @@ import { RecapsService } from "./services/recaps.service";
 import { AnalysisService } from "./services/analysis.service";
 import { db, DBClient } from "./db";
 
-const rawPrivateKey = process.env.FIREBASE_PRIVATE_KEY
-const privateKey = rawPrivateKey?.replace(/\\n/g, "\n")
-
-// TEMP DEBUG - remove after diagnosing invalid_grant issue
-const base64Payload = privateKey
-  ?.replace(/-----BEGIN PRIVATE KEY-----/, "")
-  ?.replace(/-----END PRIVATE KEY-----/, "")
-  ?.replace(/\s+/g, "")
-console.log("[firebase-debug]", {
-  projectId: process.env.FIREBASE_PROJECT_ID,
-  clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-  rawKeyLength: rawPrivateKey?.length,
-  keyLength: privateKey?.length,
-  keyHash: privateKey ? createHash("sha256").update(privateKey).digest("hex") : null,
-  startsWithQuote: rawPrivateKey?.startsWith('"'),
-  endsWithQuote: rawPrivateKey?.endsWith('"'),
-  newlineCount: (privateKey?.match(/\n/g) || []).length,
-  doubleBackslashCount: (rawPrivateKey?.match(/\\\\n/g) || []).length,
-  startsWithHeader: privateKey?.startsWith("-----BEGIN PRIVATE KEY-----\n"),
-  endsWithFooterNewline: privateKey?.endsWith("-----END PRIVATE KEY-----\n"),
-  endsWithFooterNoNewline: privateKey?.endsWith("-----END PRIVATE KEY-----"),
-  base64PayloadLength: base64Payload?.length,
-  base64PayloadHash: base64Payload ? createHash("sha256").update(base64Payload).digest("hex") : null,
-})
-
 if (!getApps().length) {
   try {
     initializeApp({
       credential: cert({
         projectId: process.env.FIREBASE_PROJECT_ID,
         clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-        privateKey,
+        privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, "\n"),
       })
     });
   } catch (error) {
@@ -79,23 +53,17 @@ const buildContext = async (req: NextRequest): Promise<AppContext> => {
   const recapsService = new RecapsService(adapters.db.dreams, adapters.db.recaps, analysisService)
 
   const authorization = req.headers.get("Authorization")
-  console.log("Authorization header:", authorization)
   const token = authorization?.replace("Bearer ", "")
-  console.log("Extracted token:", token)
 
   let user: UserModel | null = null
   let authUser: UserRecord | null = null
   if (token) {
     let decoded
     try {
-      console.log("Verifying token...")
       decoded = await getAuth().verifyIdToken(token ?? "")
-      console.log("Decoded token:", decoded)
       if (decoded) {
         authUser = await getAuth().getUser(decoded.uid)
-        console.log("Authenticated user:", authUser)
         user = await usersService.getUserById(decoded.uid)
-        console.log("User from database:", user)
       }
     } catch (e) {
       // User not authendicated
