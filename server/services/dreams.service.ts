@@ -94,6 +94,9 @@ export class DreamsService {
       interpretation: result.interpretation,
       entities: result.entities.map((e) => ({ key: normaliseKey(e.name), name: e.name, meaning: e.meaning })),
       questions: result.questions,
+      // Auto-fill only what the user left blank; never override what they actually entered.
+      emotions: dream.emotions.length > 0 ? undefined : result.emotions,
+      vividness: dream.vividness != null ? undefined : result.vividness,
     });
   }
 

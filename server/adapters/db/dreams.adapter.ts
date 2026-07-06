@@ -72,12 +72,15 @@ export class DreamsAdapter {
 
   // Replaces a dream's analysis output (title, interpretation, summary, symbols, questions) atomically.
   // `title` is omitted (left untouched) when undefined, so an already-set title is never clobbered.
+  // `emotions`/`vividness` are likewise only passed in when auto-filling what the user left blank.
   async replaceAnalysis(id: string, data: {
     title?: string;
     summary: string;
     interpretation: string;
     entities: { key: string; name: string; meaning: string }[];
     questions: string[];
+    emotions?: string[];
+    vividness?: number;
   }): Promise<DreamModel> {
     return this.db.$transaction(async (tx) => {
       await tx.dreamEntity.deleteMany({ where: { dreamId: id } });
@@ -90,6 +93,8 @@ export class DreamsAdapter {
           summary: data.summary,
           interpretation: data.interpretation,
           analyzedAt: new Date(),
+          emotions: data.emotions,
+          vividness: data.vividness,
           entities: {
             create: data.entities.map((e) => ({ key: e.key, name: e.name, meaning: e.meaning })),
           },

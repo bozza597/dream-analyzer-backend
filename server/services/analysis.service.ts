@@ -5,6 +5,10 @@ import ApplicationError, { ErrorCode } from "@/server/types/ApplicationError";
 // A small, low-cost OpenAI model with structured-output (json_schema) support.
 const MODEL = "gpt-4o-mini";
 
+// Mirrors the chip list in dream-analyzer/src/models/Dream.ts, so inferred emotions
+// stay consistent with what the user could have picked (and how recaps group them).
+const EMOTIONS = ["Meraviglia", "Inquietudine", "Sereno", "Confuso", "Triste", "Gioia", "Paura", "Nostalgia"];
+
 export type AnalysisInput = {
   type: DreamType;
   content: string;
@@ -20,6 +24,10 @@ export type AnalysisResult = {
   interpretation: string;
   entities: { name: string; meaning: string }[];
   questions: string[];
+  // The analyzer's own read of emotions/vividness. Callers should only use these to
+  // fill in what the user left blank, not to override what they actually entered.
+  emotions: string[];
+  vividness: number;
 };
 
 export type RecapStats = {
@@ -87,8 +95,20 @@ const analysisSchema = {
       description: "Da 1 a 3 domande di approfondimento, gentili e mirate, per affinare l'interpretazione.",
       items: { type: "string" },
     },
+    emotions: {
+      type: "array",
+      description:
+        `Da 1 a 3 emozioni provate nel sogno, scelte esclusivamente tra: ${EMOTIONS.join(", ")}. ` +
+        "Se il racconto indica già quali emozioni ha provato il sognatore, restituisci esattamente quelle; altrimenti deducile dal contenuto e dal tono del racconto.",
+      items: { type: "string", enum: EMOTIONS },
+    },
+    vividness: {
+      type: "integer",
+      description:
+        "Vividezza del sogno, da 0 a 100. Se il racconto indica già un valore di vividezza, restituisci lo stesso numero; altrimenti stimalo dal livello di dettaglio e concretezza del racconto.",
+    },
   },
-  required: ["title", "summary", "interpretation", "entities", "questions"],
+  required: ["title", "summary", "interpretation", "entities", "questions", "emotions", "vividness"],
 };
 
 const recapSchema = {
@@ -180,6 +200,7 @@ export class AnalysisService {
       "Estrai i simboli concreti realmente presenti nel racconto e dai a ciascuno un significato calato nel contesto, non generico.",
       "Le domande di approfondimento sono brevi, aperte e rispettose: aiutano a esplorare, non a giudicare.",
       "Dai al sogno un titolo breve ed evocativo che ne catturi l'immagine o il tema centrale, senza virgolette.",
+      "Restituisci sempre anche le emozioni provate e la vividezza: se il sognatore le ha indicate, ripetile invariate; se non le ha indicate, deducile dal racconto.",
     ].join(" ");
 
     const completion = await this.call("analyzeDream", {
@@ -202,6 +223,8 @@ export class AnalysisService {
       interpretation: parsed.interpretation ?? "",
       entities: Array.isArray(parsed.entities) ? parsed.entities.filter((e) => e?.name && e?.meaning) : [],
       questions: Array.isArray(parsed.questions) ? parsed.questions.filter(Boolean) : [],
+      emotions: Array.isArray(parsed.emotions) ? parsed.emotions.filter((e) => EMOTIONS.includes(e)) : [],
+      vividness: typeof parsed.vividness === "number" ? Math.min(100, Math.max(0, parsed.vividness)) : 50,
     };
   }
 
